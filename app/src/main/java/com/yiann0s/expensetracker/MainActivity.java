@@ -1,7 +1,6 @@
 package com.yiann0s.expensetracker;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
 
 import android.os.Bundle;
 
@@ -9,7 +8,6 @@ import com.ncapdevi.fragnav.FragNavController;
 
 public class MainActivity extends AppCompatActivity {
 
-    FragNavController fragNavController;
     ScreensNavigator screensNavigator;
     private FragNavController.RootFragmentListener mRootFragmentListener;
 
@@ -18,27 +16,22 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        fragNavController = new FragNavController(getSupportFragmentManager(), R.id.container);
+        screensNavigator = new ScreensNavigator(getSupportFragmentManager(),R.id.container);
+        screensNavigator.init(savedInstanceState);
 
-        mRootFragmentListener = new FragNavController.RootFragmentListener() {
-            @Override
-            public int getNumberOfRootFragments() {
-                return 1;
-            }
+    }
 
-            @Override
-            public Fragment getRootFragment(int index) {
-                switch (index) {
-                    case 0:
-                        return RootFragment.newInstance();
-                    default:
-                        throw new IllegalStateException("unsupported tab index: " + index);
-                }
-            }
-        };
-        fragNavController.setRootFragmentListener(mRootFragmentListener);
-        fragNavController.initialize(0, savedInstanceState);
+    @Override
+    public void onSaveInstanceState(Bundle saveInstanceState) {
+        super.onSaveInstanceState(saveInstanceState);
+        screensNavigator.onSaveInstanceState(saveInstanceState);
+    }
 
+    @Override
+    public void onBackPressed() {
+        if (!screensNavigator.navigateBack()) {
+            super.onBackPressed();
+        }
     }
 
 }

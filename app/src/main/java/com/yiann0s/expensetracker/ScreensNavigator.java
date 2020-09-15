@@ -3,12 +3,11 @@ package com.yiann0s.expensetracker;
 import android.os.Bundle;
 import android.util.Log;
 
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 
 import com.ncapdevi.fragnav.FragNavController;
-
-import static android.content.ContentValues.TAG;
-
 
 public class ScreensNavigator {
 
@@ -31,18 +30,25 @@ public class ScreensNavigator {
         }
     };
 
-    public ScreensNavigator(FragNavController fragNavController) {
-        Log.i(TAG, "ScreensNavigator: ");
-        mFragNavController = fragNavController;
+    public ScreensNavigator(FragmentManager fragmentManager, Integer containerId) {
+        mFragNavController = new FragNavController(fragmentManager,containerId);
     }
 
     public void init(Bundle savedInstanceState) {
-        Log.i(TAG, "init: ");
         mFragNavController.setRootFragmentListener(mRootFragmentListener);
         mFragNavController.initialize(FragNavController.TAB1, savedInstanceState);
     }
 
     public void onSaveInstanceState(Bundle saveInstanceState) {
         mFragNavController.onSaveInstanceState(saveInstanceState);
+    }
+
+    public boolean navigateBack() {
+        if(mFragNavController.isRootFragment()) {
+            return false;
+        } else {
+            mFragNavController.popFragment();
+            return true;
+        }
     }
 }
